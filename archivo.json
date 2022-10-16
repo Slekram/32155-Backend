@@ -1,0 +1,22 @@
+[
+	{
+		"producto": "Flauta",
+		"precio": 200,
+		"id": 1
+	},
+	{
+		"producto": "Guitarra",
+		"precio": 200,
+		"id": 2
+	},
+	{
+		"producto": "Teclado",
+		"precio": 300,
+		"id": 3
+	},
+	{
+		"producto": "Xilofon",
+		"precio": 500,
+		"id": 4
+	}
+]
