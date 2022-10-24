@@ -33,9 +33,7 @@ rutaProductos.post("/", async (req,res)=>{
         })
     }
     await contenedor1.save(data);
-    res.json({
-        msg: "ok"
-    })
+    res.redirect("/");
 })
 
 rutaProductos.put("/:id", async (req,res)=>{

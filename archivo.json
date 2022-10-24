@@ -15,8 +15,18 @@
 		"id": 3
 	},
 	{
-		"producto": "Charango",
-		"precio": 8000,
+		"producto": "Xilofon",
+		"precio": 500,
 		"id": 4
+	},
+	{
+		"producto": "Triangulo",
+		"precio": "10000",
+		"id": 5
+	},
+	{
+		"producto": "Trompeta",
+		"precio": "5000",
+		"id": 6
 	}
 ]
