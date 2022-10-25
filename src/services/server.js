@@ -1,15 +1,18 @@
 const express= require("express");
+const http = require("http");
+const io = require("socket.io");
 const {engine} = require("express-handlebars");
 const MainRouter = require("../routes/index");
 const path = require("path");
-const app = express();
 const contenedor1 = require("../main");
 
 const viewsFolderPath = path.resolve(__dirname, "../../views");
-console.log(viewsFolderPath);
 const layoutFolderPath = `${viewsFolderPath}/layouts`;
 const defaultLayoutPath = `${layoutFolderPath}/index.hbs`;
 const partialsFolderPath = `${viewsFolderPath}/partials`;
+
+const app = express();
+
 app.set("view engine", "hbs");
 app.set("views", viewsFolderPath );
 
@@ -38,4 +41,14 @@ app.use(express.static("public"));
 
 app.use("/api", MainRouter);
 
-module.exports = app;
+const myHTTPServer = http.Server(app);
+
+const myWebSocketServer = io(myHTTPServer);
+
+myWebSocketServer.on("connection", (socket) => {
+ console.log("se acaba de conectar un cliente");
+ console.log("ID SERVER",socket.id);
+ console.log("ID CLIENTE" , socket.client.id);
+})
+
+module.exports = myHTTPServer;
