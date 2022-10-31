@@ -1,29 +1,37 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <div>
-        <form method="post" action="api/productos">
-            <div>
-                <label for="">Producto:</label>
-                <input type="text" id="producto" name="producto">
-            </div>
-            <div>
-                <label for="">Precio:</label>
-                <input type="text" id="precio" name="precio">
-            </div>
-            <div>
-                <input type="submit">
-            </div>
-        </form>
-        
-    </div>
-    <a href="/productos"><button>Productos</button></a>
-    <script src="client.js"></script>
-</body>
-</html>
+<div>
+    <form id="form">
+    {{!-- <form id="form" method="post" action="api/productos"> --}}
+        <div>
+            <label for="">Producto:</label>
+            <input type="text" id="producto" name="producto">
+        </div>
+        <div>
+            <label for="">Precio:</label>
+            <input type="text" id="precio" name="precio">
+        </div>
+        <div>
+            <input type="submit">
+        </div>
+    </form>
+</div>
+<div id="productos">
+    
+</div>
+<div>
+    <form id="formChat">
+        <div>
+            <label for="">Usuario:</label>
+            <input type="text" id="usuario" name="usuario">
+        </div>
+        <div id="messages">
+
+        </div>
+        <div>
+            <label for="">Mensaje:</label>
+            <input type="text" id="msg" name="msg">
+        </div>
+        <div>
+            <input type="submit">
+        </div>
+    </form>
+</div>

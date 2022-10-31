@@ -1,7 +1,7 @@
 const express= require("express");
 const http = require("http");
-const io = require("socket.io");
 const {engine} = require("express-handlebars");
+const {initWsServer} = require("./socket");
 const MainRouter = require("../routes/index");
 const path = require("path");
 const contenedor1 = require("../main");
@@ -12,6 +12,8 @@ const defaultLayoutPath = `${layoutFolderPath}/index.hbs`;
 const partialsFolderPath = `${viewsFolderPath}/partials`;
 
 const app = express();
+
+app.use(express.static("public"));
 
 app.set("view engine", "hbs");
 app.set("views", viewsFolderPath );
@@ -37,18 +39,16 @@ app.get("/productos", async(req, res) => {
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 
-app.use(express.static("public"));
-
 app.use("/api", MainRouter);
 
 const myHTTPServer = http.Server(app);
 
-const myWebSocketServer = io(myHTTPServer);
+const data = [
+    { author: "Juan", text: "¡Hola! ¿Que tal?" },
+    { author: "Pedro", text: "¡Muy bien! ¿Y vos?" },
+    { author: "Ana", text: "¡Genial!" }
+];
 
-myWebSocketServer.on("connection", (socket) => {
- console.log("se acaba de conectar un cliente");
- console.log("ID SERVER",socket.id);
- console.log("ID CLIENTE" , socket.client.id);
-})
+initWsServer(myHTTPServer, data);
 
 module.exports = myHTTPServer;
