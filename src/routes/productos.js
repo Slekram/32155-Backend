@@ -1,8 +1,21 @@
 const {Router} = require("express");
 
-const contenedor1 = require("../main");
+const {contenedor1} = require("../main");
 
 const rutaProductos = Router();
+
+let admin = true;
+
+const autorizacion = (req, res, next) =>{
+    if (!admin){
+        return res.status(401).json({
+            msg: "No estas autorizado",
+        })
+    }
+
+    next();
+
+}
 
 rutaProductos.get("/", async (req, res) =>{
     const productos = await contenedor1.getAll().then((data)=>{
@@ -15,7 +28,6 @@ rutaProductos.get("/", async (req, res) =>{
 
 rutaProductos.get("/:id", async (req, res) =>{
     const id = req.params.id;
-    console.log(id);
     const productos = await contenedor1.getById(id).then((data)=>{
         return data;
     });
@@ -25,7 +37,8 @@ rutaProductos.get("/:id", async (req, res) =>{
     })
 })
 
-rutaProductos.post("/", async (req,res)=>{
+rutaProductos.post("/", autorizacion, async (req,res)=>{
+    
     const data = req.body;
     if (!data.producto||!data.precio){
         return res.status(400).json({
@@ -36,7 +49,7 @@ rutaProductos.post("/", async (req,res)=>{
     res.redirect("/");
 })
 
-rutaProductos.put("/:id", async (req,res)=>{
+rutaProductos.put("/:id", autorizacion, async (req,res)=>{
     const id = req.params.id;
     console.log(req.params);
     const data = req.body;
@@ -52,7 +65,8 @@ rutaProductos.put("/:id", async (req,res)=>{
     })
 })
 
-rutaProductos.delete("/:id", async (req,res)=>{
+rutaProductos.delete("/:id", autorizacion, async (req,res)=>{
+    
     const id = req.params.id;
     console.log(req.params);
     await contenedor1.deleteById(id);

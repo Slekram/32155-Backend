@@ -1,0 +1,12 @@
+[
+	{
+		"id": 1,
+		"productos": [
+			{
+				"id": 1,
+				"producto": "asddas",
+				"unidades": 5
+			}
+		]
+	}
+]
