@@ -1,4 +1,16 @@
 const {Router} = require("express");
+const sql = require("../services/sql");
+
+// async function test(){
+//     await sql.createTable();
+//     console.log("Table creada");
+//     await sql.insertProducts(products);
+//     console.log("Producto insertado");
+//     const allProducts = await sql.getAllProducts();
+//     console.table(allProducts);
+//     await sql.deleteProductById(6);
+//     console.log("producto eliminado");
+// }
 
 const {contenedor1} = require("../main");
 
@@ -18,7 +30,7 @@ const autorizacion = (req, res, next) =>{
 }
 
 rutaProductos.get("/", async (req, res) =>{
-    const productos = await contenedor1.getAll().then((data)=>{
+    const productos = await sql.getAllProducts().then((data)=>{
         return data;
     })
     res.json({
@@ -28,7 +40,7 @@ rutaProductos.get("/", async (req, res) =>{
 
 rutaProductos.get("/:id", async (req, res) =>{
     const id = req.params.id;
-    const productos = await contenedor1.getById(id).then((data)=>{
+    const productos = await sql.getProductsById(id).then((data)=>{
         return data;
     });
     console.log(productos);
@@ -45,7 +57,7 @@ rutaProductos.post("/", autorizacion, async (req,res)=>{
             msg: "Campos invalidos"
         })
     }
-    await contenedor1.save(data);
+    await sql.insertProducts(data);
     res.redirect("/");
 })
 
@@ -58,7 +70,7 @@ rutaProductos.put("/:id", autorizacion, async (req,res)=>{
             msg: "Campos invalidos"
         })
     }
-    const dataActualizada = await contenedor1.actualizar(data, id);
+    const dataActualizada = await sql.updateProduct(id, data);
     res.json({
         msg: "ok",
         data: dataActualizada,
@@ -66,10 +78,9 @@ rutaProductos.put("/:id", autorizacion, async (req,res)=>{
 })
 
 rutaProductos.delete("/:id", autorizacion, async (req,res)=>{
-    
     const id = req.params.id;
     console.log(req.params);
-    await contenedor1.deleteById(id);
+    await sql.deleteProductById(id);
     res.json({
         msg: "ok"
     })
