@@ -2,7 +2,7 @@ const express= require("express");
 const http = require("http");
 const {engine} = require("express-handlebars");
 const {initWsServer} = require("./socket");
-
+const dotenv = require("dotenv").config();
 
 
 const MainRouter = require("../routes/index");

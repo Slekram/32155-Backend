@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const url = "mongodb://localhost:27017/ecommerce";
+const url = process.env.MONGO_ATLAS || "mongodb://localhost:27017/ecommerce";
 
 const initMongoDB = async () => {
     try {
