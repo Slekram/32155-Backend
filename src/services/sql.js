@@ -10,8 +10,6 @@ const options = {
     }
 };
 
-
-
 class ClientSql {
     constructor(config){
         this.knex = knex(config)

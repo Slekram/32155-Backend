@@ -1,31 +1,32 @@
 const {Router} = require("express");
 const rutaCarrito = Router();
-const {contenedorCarrito} = require("../main");
+//const {contenedorCarrito} = require("../main");
+const {carritoModel} = require("../services/mongoose/main");
 
 rutaCarrito.post("/", async(req, res)=> {
     const data = req.body;
-    if (!data.producto||!data.id||!data.unidades){
+    if (!data.producto||!data.idcomprador||!data.unidades){
         return res.status(400).json({
             msg: "Campos invalidos"
         })
     }
-    await contenedorCarrito.crearCarrito(data);
+    await carritoModel.crearCarrito(data);
     res.json({
         msg: "carrito creado",
     });
 })
 
-rutaCarrito.delete("/:id", async(req, res)=> {
-    const id = req.params.id;
-    await contenedorCarrito.deleteById(id);
+rutaCarrito.delete("/:idcomprador", async(req, res)=> {
+    const id = req.params.idcomprador;
+    await carritoModel.deleteById(id);
     res.json({
         msg: "ok"
     })
 })
 
-rutaCarrito.get("/:id/productos", async (req, res)=> {
-    const id = req.params.id;
-    const carrito = await contenedorCarrito.getById(id).then((data)=>{
+rutaCarrito.get("/:idcomprador/productos", async (req, res)=> {
+    const id = req.params.idcomprador;
+    const carrito = await carritoModel.getById(id).then((data)=>{
         return data;
     });
     res.json({
@@ -33,24 +34,23 @@ rutaCarrito.get("/:id/productos", async (req, res)=> {
     });
 })
 
-rutaCarrito.post("/:id/productos", async (req, res)=> {
+rutaCarrito.post("/:idcomprador/productos", async (req, res)=> {
     const data = req.body;
-    const id = req.params.id;
-    if (!data.producto||!data.id||!data.unidades){
+    const id = req.params.idcomprador;
+    if (!data.producto||!data.unidades){
         return res.status(400).json({
             msg: "Campos invalidos"
         })
     }
-    await contenedorCarrito.agregarCarrito(data,id);
+    await carritoModel.agregarCarrito(data,id);
     res.json({
         msg: `Producto agregado al carrito de id: ${id}`
     });
 })
 
-rutaCarrito.delete("/:id/productos/:id_prod", async (req, res)=> {
-    const id = req.params.id;
-    const id2 = req.params.id_prod;
-    await contenedorCarrito.eliminarCarrito(id, id2);
+rutaCarrito.delete("/:idcomprador/productos/:id_prod", async (req, res)=> {
+    const id = req.params.id_prod;
+    await carritoModel.eliminarCarrito(id);
     res.json({
         msg: "ok"
     })

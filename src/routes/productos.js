@@ -1,5 +1,6 @@
 const {Router} = require("express");
-const sql = require("../services/sql");
+
+//const sql = require("../services/sql");
 
 // async function test(){
 //     await sql.createTable();
@@ -12,7 +13,9 @@ const sql = require("../services/sql");
 //     console.log("producto eliminado");
 // }
 
-const {contenedor1} = require("../main");
+//const {contenedor1} = require("../main");
+
+const {productosModel} = require("../services/mongoose/main");
 
 const rutaProductos = Router();
 
@@ -30,7 +33,7 @@ const autorizacion = (req, res, next) =>{
 }
 
 rutaProductos.get("/", async (req, res) =>{
-    const productos = await sql.getAllProducts().then((data)=>{
+    const productos = await  productosModel.getAll().then((data)=>{
         return data;
     })
     res.json({
@@ -40,37 +43,35 @@ rutaProductos.get("/", async (req, res) =>{
 
 rutaProductos.get("/:id", async (req, res) =>{
     const id = req.params.id;
-    const productos = await sql.getProductsById(id).then((data)=>{
+    const productos = await productosModel.getById(id).then((data)=>{
         return data;
     });
-    console.log(productos);
     res.json({
         data: productos,
-    })
+    });
 })
 
 rutaProductos.post("/", autorizacion, async (req,res)=>{
     
     const data = req.body;
-    if (!data.producto||!data.precio){
+    if (!data.producto||!data.precio||!data.stock){
         return res.status(400).json({
             msg: "Campos invalidos"
         })
     }
-    await sql.insertProducts(data);
+    await productosModel.createProducts(data);
     res.redirect("/");
 })
 
 rutaProductos.put("/:id", autorizacion, async (req,res)=>{
     const id = req.params.id;
-    console.log(req.params);
     const data = req.body;
-    if (!data.producto||!data.precio){
+    if (!data.producto||!data.precio||!data.stock){
         return res.status(400).json({
             msg: "Campos invalidos"
         })
     }
-    const dataActualizada = await sql.updateProduct(id, data);
+    const dataActualizada = await productosModel.actualizar(id, data);
     res.json({
         msg: "ok",
         data: dataActualizada,
@@ -79,8 +80,7 @@ rutaProductos.put("/:id", autorizacion, async (req,res)=>{
 
 rutaProductos.delete("/:id", autorizacion, async (req,res)=>{
     const id = req.params.id;
-    console.log(req.params);
-    await sql.deleteProductById(id);
+    await productosModel.deleteById(id);
     res.json({
         msg: "ok"
     })

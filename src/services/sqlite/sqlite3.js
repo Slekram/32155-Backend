@@ -3,9 +3,8 @@ const knex = require("knex");
 const options = {
     client: "sqlite3",
     connection: {
-        filename: "./DB/carrito.sqlite"
-    },
-    useNullAsDefault: true
+        filename: "./DB/mydb.sqlite"
+    }
 };
 
 class ClientSqlite {
@@ -15,7 +14,8 @@ class ClientSqlite {
 
     async createTable () {
         await this.knex.schema.dropTableIfExists("carrito");
-        await this.knex.schema.createTable("carrito", table => {
+        console.log("Tabla dropeada");
+        await this.knex.schema.createTable("ecommerce", table => {
             table.increments("id").primary();
             table.string("producto", 100).notNullable();
             table.integer("unidades");
@@ -51,8 +51,18 @@ class ClientSqlite {
 
 }
 
-const sqlite = new ClientSqlite(options);
+const sqlite = new ClientSqlite(options); 
 
-sqlite.createTable();
+async function createTableCarrito(){
+    await sqlite.createTable().then(()=>{
+        console.log("Tabla creada con exito");
+    });
+    
+};
 
-module.exports = sqlite;
+createTableCarrito();
+
+module.exports = {
+    ClientSqlite,
+    options
+}
