@@ -1,5 +1,36 @@
 const ProductosModel = require("./models/products");
 const CarritoModel = require("./models/carrito");
+const MensajesModel = require("./models/mensajes");
+const {normalize, schema} = require("normalizr");
+
+class ContenedorMensajes {
+
+    getAll = async () => {
+        const mensajes = await MensajesModel.find();
+        return mensajes;
+    }
+
+    normalizar = async () => {
+        const dataProcesada = await this.getAll().then((data)=>{
+            return data;
+        })
+
+        
+        const user = new schema.Entity("users");
+        const mensajes = new schema.Entity("mensajes");
+
+        const chat = new schema.Entity("chat", {
+            mail: user,
+            msg: [mensajes]
+        });
+
+
+        const normalizedData = normalize(dataProcesada, chat);
+
+        return normalizedData;
+    }
+
+}
 
 class ContenedorProductos {
 
@@ -78,9 +109,24 @@ class ContenedorCarrito {
 
 const productosModel = new ContenedorProductos;
 const carritoModel = new ContenedorCarrito;
+const mensajesModel = new ContenedorMensajes;
+
+console.log("ahora voy a normalizar");
+const normalizar = async () => {
+    const dataProcesada = await mensajesModel.getAll().then((data)=>{
+        return data;
+    })
+
+    console.log(dataProcesada);
+    console.log("Termine de normalizar");
+
+}
+
+normalizar();
 
 module.exports = {
     productosModel,
-    carritoModel
+    carritoModel,
+    mensajesModel,
 }
 
