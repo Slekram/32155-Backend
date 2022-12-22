@@ -111,7 +111,7 @@ const productosModel = new ContenedorProductos;
 const carritoModel = new ContenedorCarrito;
 const mensajesModel = new ContenedorMensajes;
 
-console.log("ahora voy a normalizar");
+//console.log("ahora voy a normalizar");
 const normalizar = async () => {
     const dataProcesada = await mensajesModel.getAll().then((data)=>{
         return data;
@@ -122,7 +122,7 @@ const normalizar = async () => {
 
 }
 
-normalizar();
+//normalizar();
 
 module.exports = {
     productosModel,

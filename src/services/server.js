@@ -10,6 +10,9 @@ const MongoStore = require("connect-mongo");
 const MainRouter = require("../routes/index");
 const path = require("path");
 const contenedor1 = require("../main");
+
+const passport = require("passport");
+const { loginFunc, signupFunc } = require("./auth");
 //const { connect } = require("http2");
 
 
@@ -61,70 +64,75 @@ const sessionConfig = {
 
 app.use(session(sessionConfig));
 
-const users = [
-    {
-        username: "Maxi",
-        password: "12345",
-        admin: true
-    },
-    {
-        username: "Matias",
-        password: "12345",
-        admin: false
-    }
-]
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use("signup", signupFunc);
+passport.use("login", loginFunc);
 
-app.post("/login", (req, res) => {
-    const {username, password} = req.body;
+// const users = [
+//     {
+//         username: "Maxi",
+//         password: "12345",
+//         admin: true
+//     },
+//     {
+//         username: "Matias",
+//         password: "12345",
+//         admin: false
+//     }
+// ]
 
-    const index = users.findIndex((aUser) => aUser.username === username && aUser.password === password); 
+// app.post("/login", (req, res) => {
+//     const {username, password} = req.body;
 
-    console.log(index);
+//     const index = users.findIndex((aUser) => aUser.username === username && aUser.password === password); 
 
-    if (index < 0) res.status(401).json({msg: "no estas autorizado"});
-    else {
-        const user = users[index];
-        req.session.info = {
-            loggedIn: true,
-            contador: 1,
-            admin: user.admin
-        };
-        res.json({msg: `Bienvenido ${user.username}`});
-    }
-})
+//     console.log(index);
 
-app.post("/logout", (req, res) => {
-    req.session.destroy();
-    res.json({msg: "sesion destruida"});
-})
+//     if (index < 0) res.status(401).json({msg: "no estas autorizado"});
+//     else {
+//         const user = users[index];
+//         req.session.info = {
+//             loggedIn: true,
+//             contador: 1,
+//             admin: user.admin
+//         };
+//         res.json({msg: `Bienvenido ${user.username}`});
+//     }
+// })
 
-const validateLogIn = (req, res, next) => {
-    if (req.session.info.loggedIn) {next()
-    } else {res.status(401).json({msg: "No esta autorizado"})}
-}
+// app.post("/logout", (req, res) => {
+//     req.session.destroy();
+//     res.json({msg: "sesion destruida"});
+// })
 
-const isAdmin = (req, res, next) => {
-    if (req.session.info.admin) {next()
-    } else {res.status(401).json({msg: "No sos administrador"})}
-}
+// const validateLogIn = (req, res, next) => {
+//     if (req.session.info.loggedIn) {next()
+//     } else {res.status(401).json({msg: "No esta autorizado"})}
+// }
 
-app.get("/secret-endpoint", validateLogIn, (req, res) => {
-    req.session.info.contado++;
-    res.json({
-        msg: "Informacion super secreta",
-        contador: req.session.info.contador,
-        session: req.session
-    });
-});
+// const isAdmin = (req, res, next) => {
+//     if (req.session.info.admin) {next()
+//     } else {res.status(401).json({msg: "No sos administrador"})}
+// }
 
-app.get("/secret-endpoint-admin", validateLogIn, isAdmin, (req, res) => {
-    req.session.info.contado++;
-    res.json({
-        msg: "Aca solo accede el admin",
-        contador: req.session.info.contador,
-        session: req.session
-    });
-});
+// app.get("/secret-endpoint", validateLogIn, (req, res) => {
+//     req.session.info.contado++;
+//     res.json({
+//         msg: "Informacion super secreta",
+//         contador: req.session.info.contador,
+//         session: req.session
+//     });
+// });
+
+// app.get("/secret-endpoint-admin", validateLogIn, isAdmin, (req, res) => {
+//     req.session.info.contado++;
+//     res.json({
+//         msg: "Aca solo accede el admin",
+//         contador: req.session.info.contador,
+//         session: req.session
+//     });
+// });
 
 app.use("/api", MainRouter);
 
